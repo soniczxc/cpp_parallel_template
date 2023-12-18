@@ -1,7 +1,3 @@
-//
-// Created by osia on 25.05.23.
-//
-
 #include "EventQueue.h"
 
 void EventQueue::push(const std::shared_ptr<const Event> &event) {

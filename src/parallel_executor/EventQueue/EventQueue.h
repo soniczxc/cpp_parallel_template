@@ -1,7 +1,3 @@
-//
-// Created by osia on 25.05.23.
-//
-
 #ifndef PARALLEL_EXECUTOR_EVENTQUEUE_H
 #define PARALLEL_EXECUTOR_EVENTQUEUE_H
 #include <iostream>
