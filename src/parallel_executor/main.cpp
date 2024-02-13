@@ -18,13 +18,5 @@ int main(int argc, char *argv[]) {
     Parser parser(queue, A, B);
 
     parser.run(1,1, -1, -1);
-    while (true) {
-        std::shared_ptr<const Event> event = queue->pop(std::chrono::seconds (5));
-        if (event) {
-            std::cout << event->toString() << std::endl << std::flush;
-        }else{
-            break;
-        };
-    }
     return 0;
 }
