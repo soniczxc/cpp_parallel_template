@@ -43,7 +43,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         src/parallel_executor/EventQueue
         src/parallel_executor/Parser
 )
-target_link_libraries(${PROJECT_NAME} parser PRIVATE Threads::Threads)
+target_link_libraries(${PROJECT_NAME} parser Threads::Threads)
 target_link_libraries(${PROJECT_NAME} parser device event eventQueue)
 
 
