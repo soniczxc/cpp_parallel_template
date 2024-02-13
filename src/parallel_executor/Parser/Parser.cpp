@@ -13,19 +13,33 @@ Parser::Parser(std::shared_ptr<EventQueue> queue, std::shared_ptr<Device> A, std
 }
 
 void Parser::read(std::shared_ptr<Device> device, std::chrono::seconds sleep_duration, size_t loop_count, int crush_index) {
-    std::cout << StartedEvent(device).toString() << std::endl << std::flush;
+    //std::cout << StartedEvent(device).toString() << std::endl << std::flush;
+    if(queue){
+        queue->push(std::make_shared<StartedEvent>(device));
+    }
     for (size_t i = 0; i < loop_count; ++i) {
+        auto event = queue->pop(std::chrono::seconds(0));
+        if (event){
+            std::cout<<event->toString()<<std::endl<<std::flush;
+        }
         if (i == crush_index) {
             std::this_thread::sleep_for(std::chrono::seconds(1));
+            //queue->push(DataEvent(device));
+            queue->push(std::make_shared<DataEvent>("Device " + device->getName() + " stopped"));
             std::cout << "Device " << device->getName() << " stopped" << std::endl << std::flush;
             break;
         }
         std::this_thread::sleep_for(sleep_duration);
         auto data = device->getDataAsString();
+        //queue->push(std::make_shared<DataEvent>(device->getDataAsString()));
         std::cout << DataEvent(device).toString() << std::endl << std::flush;
+
+       
     }
+
     if (crush_index == -1) {
-        std::cout << WorkDoneEvent(device).toString() << std::endl;
+        queue->push(std::make_shared<WorkDoneEvent>(device));
+        //std::cout << WorkDoneEvent(device).toString() << std::endl;
     }
 }
 
