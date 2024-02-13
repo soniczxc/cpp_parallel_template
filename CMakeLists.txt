@@ -7,7 +7,8 @@ FetchContent_Declare(
         googletest
         URL https://github.com/google/googletest/archive/refs/tags/v1.13.0.zip
 )
-
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
@@ -42,7 +43,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         src/parallel_executor/EventQueue
         src/parallel_executor/Parser
 )
-
+target_link_libraries(${PROJECT_NAME} parser PRIVATE Threads::Threads)
 target_link_libraries(${PROJECT_NAME} parser device event eventQueue)
 
 
