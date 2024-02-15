@@ -10,34 +10,42 @@ Parser::Parser(std::shared_ptr<EventQueue> queue, std::shared_ptr<Device> A, std
         throw std::runtime_error("Can't be nullptr!");
     }
 }
+void PrintQueue(std::shared_ptr<EventQueue> queue){
+    std::shared_ptr<const Event> event;
 
-void Parser::read(std::shared_ptr<Device> device, std::chrono::seconds sleep_duration, size_t loop_count, int crush_index) {
-    queue->push(std::make_shared<StartedEvent>(device)); // Помещаем событие StartedEvent в очередь
-
-    for (size_t i = 0; i < loop_count; ++i) {
-        std::shared_ptr<const Event> event = queue->pop(std::chrono::seconds(0)); // Извлекаем сообщение из очереди
+    while (queue) {
+        event = queue->pop(std::chrono::seconds(0));
         if (event != nullptr) {
             std::cout << event->toString() << std::endl << std::flush;
         }
-
-        if (i == crush_index) {
-            std::this_thread::sleep_for(std::chrono::seconds(1));
-            queue->push(std::make_shared<WorkDoneEvent>(device));
-            break;
-        }
-
-        std::this_thread::sleep_for(sleep_duration);
-        auto data = device->getDataAsString();
-        queue->push(std::make_shared<DataEvent>(device)); // Помещаем событие DataEvent в очередь
-    }
-
-    if (crush_index == -1) {
-        queue->push(std::make_shared<WorkDoneEvent>(device));
     }
 }
+void Parser::read(std::shared_ptr<Device> device, std::chrono::seconds sleep_duration, size_t loop_count, int crush_index) {
+    //std::cout << StartedEvent(device).toString() << std::endl << std::flush;
+    queue->push(std::make_shared<StartedEvent>(device));
 
+    for (size_t i = 0; i < loop_count; ++i) {
+        std::this_thread::sleep_for(sleep_duration);
+        //auto data = device->getDataAsString();
+        //std::cout << DataEvent(device).toString() << std::endl << std::flush;
+        queue->push(std::make_shared<DataEvent>(device));
+        PrintQueue(queue);
+        if (i == loop_count -1) {
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            queue->push(std::make_shared<WorkDoneEvent>(device));
+            //std::cout << WorkDoneEvent(device).toString() << std::endl << std::flush;
+            PrintQueue(queue);
+            break;
+        }
+        PrintQueue(queue);
+    }
+    if (crush_index == -1 ) {
+        //std::cout << WorkDoneEvent(device).toString() << std::endl << std::flush;
+        queue->push(std::make_shared<WorkDoneEvent>(device));
+        PrintQueue(queue);
+    }
 
-
+}
 
 void Parser::run(size_t loop_count_A, size_t loop_count_B, int crush_index_A, int crush_index_B) {
     std::thread threadA(&Parser::read, this, A, std::chrono::seconds(1), loop_count_A, crush_index_A);
