@@ -16,15 +16,15 @@ include_directories(${CMAKE_SOURCE_DIR}/src)
 file(GLOB Device_SRC
         "src/parallel_executor/Device/*.h"
         "src/parallel_executor/Device/*.cpp"
-        )
+)
 file(GLOB Event_SRC
         "src/parallel_executor/Event/*.h"
         "src/parallel_executor/Event/*.cpp"
-        )
+)
 file(GLOB EventQueue_SRC
         "src/parallel_executor/EventQueue/*.h"
         "src/parallel_executor/EventQueue/*.cpp"
-        )
+)
 file(GLOB Parser_SRC
         "src/parallel_executor/Parser/*.h"
         "src/parallel_executor/Parser/*.cpp")
@@ -43,7 +43,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
         src/parallel_executor/EventQueue
         src/parallel_executor/Parser
 )
-target_link_libraries(${PROJECT_NAME} parser Threads::Threads)
+target_link_libraries(parser PRIVATE Threads::Threads)
 target_link_libraries(${PROJECT_NAME} parser device event eventQueue)
 
 
@@ -51,4 +51,3 @@ target_link_libraries(${PROJECT_NAME} parser device event eventQueue)
 enable_testing()
 
 add_subdirectory(test)
-
