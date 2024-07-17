@@ -1,4 +1,4 @@
-#find_package(GTest REQUIRED)
+
 add_executable(test_eventqueue Test_EventQueue.cpp)
 target_include_directories(test_eventqueue PRIVATE ${GTEST_INCLUDE_DIRS})
 target_link_libraries(test_eventqueue eventQueue event device GTest::gtest_main)
